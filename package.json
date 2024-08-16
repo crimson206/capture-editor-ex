@@ -1,0 +1,106 @@
+{
+  "name": "capture-editor",
+  "displayName": "Capture Editor",
+  "description": "Capture and export your code with syntax highlighting as HTML, preserving VS Code's editor style.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.91.0"
+  },
+  "categories": [
+    "Snippets"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "workspaceContains:run_vscode.yaml"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "editor-capture.captureCurrent",
+        "title": "Capture Editor as HTML"
+      },
+      {
+        "command": "editor-capture.captureFiles",
+        "title": "Capture Multiple Editors as HTML, Init."
+      },
+      {
+        "command": "editor-capture.captureFilesCommandPalette",
+        "title": "Capture Multiple Editors as HTML"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "editor-capture.captureCurrent"
+        },
+        {
+          "command": "editor-capture.captureFiles",
+          "when": "false"
+        },
+        {
+          "command": "editor-capture.captureFilesCommandPalette"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "editor-capture.captureCurrent",
+          "when": "editorTextFocus"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "yarn run package",
+    "compile": "webpack",
+    "cli": "node out/cli.js",
+    "watch": "webpack --watch",
+    "package": "webpack --mode production --devtool hidden-source-map",
+    "compile-tests": "tsc -p . --outDir out",
+    "watch-tests": "tsc -p . -w --outDir out",
+    "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.12",
+    "@types/js-yaml": "^4.0.9",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.91.0",
+    "@typescript-eslint/eslint-plugin": "^7.7.1",
+    "@typescript-eslint/parser": "^7.7.1",
+    "@vscode/test-cli": "^0.0.8",
+    "@vscode/test-electron": "^2.4.1",
+    "eslint": "^8.57.0",
+    "jest": "^29.7.0",
+    "js-yaml": "^4.1.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "vscode-languageclient": "^9.0.1",
+    "vscode-languageserver": "^9.0.1",
+    "vscode-languageserver-textdocument": "^1.0.12",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "keywords": [
+    "code",
+    "capture",
+    "syntax highlight",
+    "semantic highlight",
+    "html",
+    "editor style",
+    "vscode",
+    "clipboard",
+    "documentation",
+    "code block"
+  ],
+  "publisher": "Sisung Kim",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crimson206/editor-capture"
+  },
+  "bugs": {
+    "url": "https://github.com/crimson206/editor-capture/issues"
+  },
+  "homepage": "https://github.com/crimson206/editor-capture"
+}
