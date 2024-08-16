@@ -2,7 +2,7 @@
   "name": "capture-editor",
   "displayName": "Capture Editor",
   "description": "Capture and export your code with syntax highlighting as HTML, preserving VS Code's editor style.",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -17,15 +17,15 @@
     "commands": [
       {
         "command": "editor-capture.captureCurrent",
-        "title": "Capture Editor as HTML"
+        "title": "Capture Editor: Capture Editor as HTML"
       },
       {
         "command": "editor-capture.captureFiles",
-        "title": "Capture Multiple Editors as HTML, Init."
+        "title": "Capture Editor: Capture Multiple Editors as HTML, Init."
       },
       {
         "command": "editor-capture.captureFilesCommandPalette",
-        "title": "Capture Multiple Editors as HTML"
+        "title": "Capture Editor: Capture Multiple Editors as HTML"
       }
     ],
     "menus": {
