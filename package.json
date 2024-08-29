@@ -2,17 +2,15 @@
   "name": "capture-editor",
   "displayName": "Capture Editor",
   "description": "Capture and export your code with syntax highlighting as HTML, preserving VS Code's editor style.",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "engines": {
     "vscode": "^1.91.0"
   },
+  "icon": "static/logo128.png",
   "categories": [
     "Snippets"
   ],
   "main": "./dist/extension.js",
-  "activationEvents": [
-    "workspaceContains:run_vscode.yaml"
-  ],
   "contributes": {
     "commands": [
       {
@@ -50,20 +48,19 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "yarn run package",
+    "vscode:prepublish": "yarn run build",
     "compile": "webpack",
     "cli": "node out/cli.js",
     "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
+    "build": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
     "lint": "eslint src --ext ts",
     "test": "vscode-test",
     "package:pre": "vsce package --pre-release",
-    "vscode:package": "vsce package",
-    "publish": "vsce publish",
-    "release": "npm run package && npm run publish"
+    "package": "vsce package",
+    "vs-publish": "vsce publish"
   },
   "devDependencies": {
     "@types/jest": "^29.5.12",
