@@ -49,10 +49,9 @@
   },
   "scripts": {
     "vscode:prepublish": "yarn run build",
-    "compile": "webpack",
     "cli": "node out/cli.js",
-    "watch": "webpack --watch",
-    "build": "webpack --mode production --devtool hidden-source-map",
+    "compile": "webpack --config ./webpack.config.js && webpack --config ./webview-src/webpack.config.js",
+    "watch": "concurrently \"webpack --watch --config ./webpack.config.js\" \"webpack --watch --config ./webview-src/webpack.config.js\"",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
@@ -60,9 +59,13 @@
     "test": "vscode-test",
     "package:pre": "vsce package --pre-release",
     "package": "vsce package",
-    "vs-publish": "vsce publish"
+    "vs-publish": "vsce publish",
+    "build-webview": "webpack --config webview-src/webpack.config.js",
+    "watch-webview": "webpack --watch --config webview-src/webpack.config.js"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/babel__core": "^7.20.5",
     "@types/jest": "^29.5.12",
     "@types/js-yaml": "^4.0.9",
     "@types/mocha": "^10.0.6",

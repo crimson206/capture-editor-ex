@@ -9,6 +9,7 @@ export async function fetchHighlightedHTML(context: vscode.ExtensionContext): Pr
     vscode.commands.executeCommand('editor.action.clipboardCopyWithSyntaxHighlightingAction');
     vscode.commands.executeCommand('cancelSelection');
 
+    /** 
     const webview = vscode.window.createWebviewPanel('codetohtml', 'Code to HTML', vscode.ViewColumn.One, {
         enableScripts: true
     });
@@ -16,6 +17,21 @@ export async function fetchHighlightedHTML(context: vscode.ExtensionContext): Pr
     const htmlUri = path.resolve(context.extensionPath, 'webview/html/get-html.html');
     const htmlContent = fs.readFileSync(htmlUri, 'utf-8');
     webview.webview.html = htmlContent;
+    */
+
+    const webview = vscode.window.createWebviewPanel('codetohtml', 'Code to HTML', vscode.ViewColumn.One, {
+        enableScripts: true
+    });
+
+    const htmlUri = path.resolve(context.extensionPath, 'webview/html/get-html.html');
+    const htmlContent = fs.readFileSync(htmlUri, 'utf-8');
+
+    const scriptPathOnDisk = vscode.Uri.file(path.join(context.extensionPath, 'webview-dist', 'script.js'));
+    const scriptUri = webview.webview.asWebviewUri(scriptPathOnDisk);
+
+    webview.webview.html = htmlContent.replace('${scriptUri}', scriptUri.toString());
+
+
 
     const highlightHTML = await new Promise<string>((resolve) => {
         webview.webview.onDidReceiveMessage((message) => {
@@ -26,7 +42,8 @@ export async function fetchHighlightedHTML(context: vscode.ExtensionContext): Pr
 
         webview.webview.postMessage({ command: 'requestHighlightedHTML' });
     });
-    webview.dispose();
+    
+    // webview.dispose();
 
     await vscode.env.clipboard.writeText(clipboardText);
 
