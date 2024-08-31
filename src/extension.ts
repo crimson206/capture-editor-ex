@@ -7,6 +7,9 @@ import {
 
 export function activate(context: vscode.ExtensionContext) {
 
+    const config = vscode.workspace.getConfiguration('captureEditor');
+    const developerMode = config.get<boolean>('developerMode', false);
+
     context.subscriptions.push(
         vscode.commands.registerCommand('editor-capture.captureCurrent', () => captureCurrent(context))
     );
@@ -23,6 +26,8 @@ export function activate(context: vscode.ExtensionContext) {
             captureFilesCommandPalette (context)
         )
     );
+
+    context.workspaceState.update('developerMode', developerMode);
 }
 
 export function deactivate() {}
