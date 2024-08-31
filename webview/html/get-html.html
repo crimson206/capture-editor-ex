@@ -1,35 +1,12 @@
-<!-- Source: https://github.com/Aniny21/CodeToHTML -->
- 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Highlight Text</title>
 </head>
-
 <body>
-    <script>
-        const vscode = acquireVsCodeApi();
-    
-        window.addEventListener('paste', (event) => {
-            const html = extractHighlightedHTML(event.clipboardData.getData('text/html'));
-            vscode.postMessage({ command: 'sendHighlightedHTML', result: html });
-        });
-    
-        window.addEventListener('message', (event) => {
-            if (event.data.command === 'requestHighlightedHTML') {
-                document.execCommand('paste');
-            }
-        });
-    
-        function extractHighlightedHTML(html) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-            return doc.body.innerHTML;
-        }
-    </script>
+    <div id="log"></div>
+    <script src="${scriptUri}"></script>
 </body>
-
 </html>
