@@ -5,20 +5,18 @@ import fs from 'fs';
 export async function fetchHighlightedHTMLs(context: vscode.ExtensionContext, filePaths: string[]): Promise<string[]> {
     const results: string[] = [];
 
-    // 현재 클립보드 내용을 백업
     const clipboardText = await vscode.env.clipboard.readText();
 
     for (const filePath of filePaths) {
-        // 파일 열기
+
         const document = await vscode.workspace.openTextDocument(filePath);
         await vscode.window.showTextDocument(document);
 
-        // 하이라이트된 HTML 가져오기
         vscode.commands.executeCommand('editor.action.selectAll');
         vscode.commands.executeCommand('editor.action.clipboardCopyWithSyntaxHighlightingAction');
         vscode.commands.executeCommand('cancelSelection');
 
-        const webview = vscode.window.createWebviewPanel('codetohtml', 'Code to HTML', vscode.ViewColumn.One, {
+        const webview = vscode.window.createWebviewPanel('captureEditor', 'Capture Editor', vscode.ViewColumn.One, {
             enableScripts: true
         });
 
@@ -40,7 +38,6 @@ export async function fetchHighlightedHTMLs(context: vscode.ExtensionContext, fi
         results.push(highlightHTML);
     }
 
-    // 이전 클립보드 내용 복원
     await vscode.env.clipboard.writeText(clipboardText);
 
     return results;

@@ -1,7 +1,7 @@
 {
   "name": "capture-editor",
-  "displayName": "Capture Editor",
-  "description": "Capture and export your code with syntax highlighting as HTML, preserving VS Code's editor style.",
+  "displayName": "Copy HTML",
+  "description": "Copy your code as HTML with syntax highlighting, preserving VS Code's editor style. Supports file saving and multi-file operations.",
   "version": "0.1.3",
   "engines": {
     "vscode": "^1.91.0"
@@ -14,16 +14,20 @@
   "contributes": {
     "commands": [
       {
-        "command": "editor-capture.captureCurrent",
-        "title": "Capture Editor: Capture Editor as HTML"
+        "command": "copy-html.captureCurrent",
+        "title": "Copy HTML: Save Editor as HTML File"
       },
       {
-        "command": "editor-capture.captureFiles",
-        "title": "Capture Editor: Capture Multiple Editors as HTML, Init."
+        "command": "copy-html.captureFiles",
+        "title": "Copy HTML: Save Multiple Editors as HTML Files, Init."
       },
       {
-        "command": "editor-capture.captureFilesCommandPalette",
-        "title": "Capture Editor: Capture Multiple Editors as HTML"
+        "command": "copy-html.captureFilesCommandPalette",
+        "title": "Copy HTML: Save Multiple Editors as HTML Files"
+      },
+      {
+        "command": "copy-html.copySelected",
+        "title": "Copy HTML: Copy Selected Text as HTML"
       }
     ],
     "configuration": {
@@ -39,23 +43,42 @@
     "menus": {
       "commandPalette": [
         {
-          "command": "editor-capture.captureCurrent"
+          "command": "copy-html.captureCurrent"
         },
         {
-          "command": "editor-capture.captureFiles",
+          "command": "copy-html.captureFiles",
           "when": "false"
         },
         {
-          "command": "editor-capture.captureFilesCommandPalette"
+          "command": "copy-html.captureFilesCommandPalette"
+        },
+        {
+          "command": "copy-html.copySelected",
+          "when": "false"
         }
       ],
       "editor/context": [
         {
-          "command": "editor-capture.captureCurrent",
+          "submenu": "copy-html.menu",
           "when": "editorTextFocus"
         }
+      ],
+      "copy-html.menu": [
+        {
+          "command": "copy-html.captureCurrent"
+        },
+        {
+          "command": "copy-html.copySelected",
+          "when": "editorHasSelection"
+        }
       ]
-    }
+    },
+    "submenus": [
+      {
+        "id": "copy-html.menu",
+        "label": "Capture Editor"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run build",
