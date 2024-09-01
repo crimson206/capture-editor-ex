@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import { 
     captureCurrent, 
     captureFiles,
-    captureFilesCommandPalette 
+    captureFilesCommandPalette,
+    copySelected 
 } from './commands/editorCapture';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -25,6 +26,10 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('editor-capture.captureFilesCommandPalette', () => 
             captureFilesCommandPalette (context)
         )
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('editor-capture.copySelected', () => copySelected(context))
     );
 
     context.workspaceState.update('developerMode', developerMode);

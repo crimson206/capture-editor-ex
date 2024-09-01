@@ -2,24 +2,27 @@ import * as vscode from 'vscode';
 import path from 'path';
 import fs from 'fs';
 
-export async function fetchHighlightedHTML(context: vscode.ExtensionContext): Promise<string> {
-    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
-    const clipboardText = await vscode.env.clipboard.readText();
+async function saveClipboard(): Promise<string> {
+    return await vscode.env.clipboard.readText();
+}
 
+async function restoreClipboard(text: string): Promise<void> {
+    await vscode.env.clipboard.writeText(text);
+}
+
+function selectAllText(): void {
     vscode.commands.executeCommand('editor.action.selectAll');
+}
+
+function copyWithSyntaxHighlighting(): void {
     vscode.commands.executeCommand('editor.action.clipboardCopyWithSyntaxHighlightingAction');
+}
+
+function cancelSelection(): void {
     vscode.commands.executeCommand('cancelSelection');
+}
 
-    /** 
-    const webview = vscode.window.createWebviewPanel('codetohtml', 'Code to HTML', vscode.ViewColumn.One, {
-        enableScripts: true
-    });
-
-    const htmlUri = path.resolve(context.extensionPath, 'webview/html/get-html.html');
-    const htmlContent = fs.readFileSync(htmlUri, 'utf-8');
-    webview.webview.html = htmlContent;
-    */
-
+function createWebviewPanel(context: vscode.ExtensionContext): vscode.WebviewPanel {
     const webview = vscode.window.createWebviewPanel('captureEditor', 'Capture Editor', vscode.ViewColumn.One, {
         enableScripts: true
     });
@@ -32,11 +35,16 @@ export async function fetchHighlightedHTML(context: vscode.ExtensionContext): Pr
 
     webview.webview.html = htmlContent.replace('${scriptUri}', scriptUri.toString());
 
+    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
     if (developerMode) {
         htmlContent = htmlContent.replace('</body>', '<div id="log"></div></body>');
     }
 
-    const highlightHTML = await new Promise<string>((resolve) => {
+    return webview;
+}
+
+async function getHighlightedHTMLFromWebview(webview: vscode.WebviewPanel): Promise<string> {
+    return new Promise<string>((resolve) => {
         webview.webview.onDidReceiveMessage((message) => {
             if (message.command === 'sendHighlightedHTML') {
                 resolve(message.result);
@@ -45,12 +53,42 @@ export async function fetchHighlightedHTML(context: vscode.ExtensionContext): Pr
 
         webview.webview.postMessage({ command: 'requestHighlightedHTML' });
     });
-    
+}
+
+export async function fetchWholeHTML(context: vscode.ExtensionContext): Promise<string> {
+    const originalClipboard = await saveClipboard();
+
+    selectAllText();
+    copyWithSyntaxHighlighting();
+    cancelSelection();
+
+    const webview = createWebviewPanel(context);
+    const highlightHTML = await getHighlightedHTMLFromWebview(webview);
+
+    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
     if (!developerMode) {
         webview.dispose();
     }
 
-    await vscode.env.clipboard.writeText(clipboardText);
+    await restoreClipboard(originalClipboard);
+
+    return highlightHTML;
+}
+
+export async function fetchSelectedHTML(context: vscode.ExtensionContext): Promise<string> {
+    const originalClipboard = await saveClipboard();
+
+    copyWithSyntaxHighlighting();
+
+    const webview = createWebviewPanel(context);
+    const highlightHTML = await getHighlightedHTMLFromWebview(webview);
+
+    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
+    if (!developerMode) {
+        webview.dispose();
+    }
+
+    await restoreClipboard(originalClipboard);
 
     return highlightHTML;
 }

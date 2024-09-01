@@ -24,6 +24,10 @@
       {
         "command": "editor-capture.captureFilesCommandPalette",
         "title": "Capture Editor: Capture Multiple Editors as HTML"
+      },
+      {
+        "command": "editor-capture.copySelected",
+        "title": "Capture Editor: Copy Selected Text as HTML"
       }
     ],
     "configuration": {
@@ -47,15 +51,34 @@
         },
         {
           "command": "editor-capture.captureFilesCommandPalette"
+        },
+        {
+          "command": "editor-capture.copySelected",
+          "when": "false"
         }
       ],
       "editor/context": [
         {
-          "command": "editor-capture.captureCurrent",
+          "submenu": "editor-capture.menu",
           "when": "editorTextFocus"
         }
+      ],
+      "editor-capture.menu": [
+        {
+          "command": "editor-capture.captureCurrent"
+        },
+        {
+          "command": "editor-capture.copySelected",
+          "when": "editorHasSelection"
+        }
       ]
-    }
+    },
+    "submenus": [
+      {
+        "id": "editor-capture.menu",
+        "label": "Capture Editor"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run build",

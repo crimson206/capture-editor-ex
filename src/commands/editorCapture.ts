@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import path from 'path';
-import { fetchHighlightedHTML } from '../utils/htmlUtils';
+import { fetchWholeHTML, fetchSelectedHTML } from '../utils/htmlUtils';
 import { saveHTMLToFile } from '../utils/fileUtils';
 import { fetchHighlightedHTMLs } from './fetchFiles';
 
@@ -10,8 +10,24 @@ export async function captureCurrent(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage('No active editor found');
         return;
     }
-    const highlightHtml = await fetchHighlightedHTML(context);
+    const highlightHtml = await fetchWholeHTML(context);
     await saveHTMLToFile(highlightHtml, activeEditor.document.uri);
+}
+
+export async function copySelected(context: vscode.ExtensionContext) {
+    const activeEditor = vscode.window.activeTextEditor;
+    if (!activeEditor) {
+        vscode.window.showErrorMessage('No active editor found');
+        return;
+    }
+    
+    if (!activeEditor.selection.isEmpty) {
+        const highlightHtml = await fetchSelectedHTML(context);
+        await vscode.env.clipboard.writeText(highlightHtml);
+        vscode.window.showInformationMessage('Selected text copied as HTML');
+    } else {
+        vscode.window.showWarningMessage('No text selected');
+    }
 }
 
 export async function _captureFiles(context: vscode.ExtensionContext, filePaths: string[]) {
