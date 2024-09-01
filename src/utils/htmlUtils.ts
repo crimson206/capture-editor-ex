@@ -23,7 +23,7 @@ function cancelSelection(): void {
 }
 
 function createWebviewPanel(context: vscode.ExtensionContext): vscode.WebviewPanel {
-    const webview = vscode.window.createWebviewPanel('captureEditor', 'Capture Editor', vscode.ViewColumn.One, {
+    const webview = vscode.window.createWebviewPanel('copyHTML', 'Copy HTML', vscode.ViewColumn.One, {
         enableScripts: true
     });
 
@@ -34,11 +34,6 @@ function createWebviewPanel(context: vscode.ExtensionContext): vscode.WebviewPan
     const scriptUri = webview.webview.asWebviewUri(scriptPathOnDisk);
 
     webview.webview.html = htmlContent.replace('${scriptUri}', scriptUri.toString());
-
-    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
-    if (developerMode) {
-        htmlContent = htmlContent.replace('</body>', '<div id="log"></div></body>');
-    }
 
     return webview;
 }
@@ -65,11 +60,9 @@ export async function fetchWholeHTML(context: vscode.ExtensionContext): Promise<
     const webview = createWebviewPanel(context);
     const highlightHTML = await getHighlightedHTMLFromWebview(webview);
 
-    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
-    if (!developerMode) {
+    if (webview) {
         webview.dispose();
     }
-
     await restoreClipboard(originalClipboard);
 
     return highlightHTML;
@@ -83,11 +76,9 @@ export async function fetchSelectedHTML(context: vscode.ExtensionContext): Promi
     const webview = createWebviewPanel(context);
     const highlightHTML = await getHighlightedHTMLFromWebview(webview);
 
-    const developerMode = context.workspaceState.get<boolean>('developerMode', false);
-    if (!developerMode) {
+    if (webview) {
         webview.dispose();
     }
-
     await restoreClipboard(originalClipboard);
 
     return highlightHTML;
