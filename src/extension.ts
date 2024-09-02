@@ -3,7 +3,9 @@ import {
     captureCurrent, 
     captureFiles,
     captureFilesCommandPalette,
-    copySelected 
+    copySelected,
+    captureFolder,
+    captureSelectedFolder
 } from './commands/editorCapture';
 
 export function activate(context: vscode.ExtensionContext) {
@@ -29,6 +31,17 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.commands.registerCommand('copy-html.copySelected', () => copySelected(context))
     );
 
+    context.subscriptions.push(
+        vscode.commands.registerCommand('copy-html.captureFolder', (folderPath: string) => 
+            captureFolder(context, folderPath)
+        )
+    );
+
+    context.subscriptions.push(
+        vscode.commands.registerCommand('copy-html.captureSelectedFolder', (uri: vscode.Uri) => {
+            captureSelectedFolder(context, uri);
+        })
+    );
 }
 
 export function deactivate() {}
