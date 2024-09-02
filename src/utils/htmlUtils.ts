@@ -50,7 +50,7 @@ async function getHighlightedHTMLFromWebview(webview: vscode.WebviewPanel): Prom
     });
 }
 
-export async function fetchWholeHTML(context: vscode.ExtensionContext): Promise<string> {
+export async function fetchActiveEditorHTML(context: vscode.ExtensionContext): Promise<string> {
     const originalClipboard = await saveClipboard();
 
     selectAllText();

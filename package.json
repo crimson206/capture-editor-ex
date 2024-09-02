@@ -2,7 +2,7 @@
   "name": "capture-editor",
   "displayName": "Copy HTML",
   "description": "Copy your code as HTML with syntax highlighting, preserving VS Code's editor style. Supports file saving and multi-file operations.",
-  "version": "0.1.3",
+  "version": "0.1.4-beta.1",
   "engines": {
     "vscode": "^1.91.0"
   },
@@ -28,6 +28,14 @@
       {
         "command": "copy-html.copySelected",
         "title": "Copy HTML: Copy Selected Text as HTML"
+      },
+      {
+        "command": "copy-html.captureFolder",
+        "title": "Copy HTML: Save Editors under the Folder as HTML Files, Init."
+      },
+      {
+        "command": "copy-html.captureSelectedFolder",
+        "title": "Copy HTML: Save Editors under the Folder as HTML Files"
       }
     ],
     "configuration": {
@@ -55,6 +63,14 @@
         {
           "command": "copy-html.copySelected",
           "when": "false"
+        },
+        {
+          "command": "copy-html.captureFolder",
+          "when": "false"
+        },
+        {
+          "command": "copy-html.captureSelectedFolder",
+          "when": "false"
         }
       ],
       "editor/context": [
@@ -63,7 +79,14 @@
           "when": "editorTextFocus"
         }
       ],
-      "copy-html.menu": [
+      "explorer/context": [
+        {
+          "submenu": "copy-html.explorer-menu",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation"
+        }
+      ],
+      "copy-html.editor-menu": [
         {
           "command": "copy-html.captureCurrent"
         },
@@ -71,17 +94,26 @@
           "command": "copy-html.copySelected",
           "when": "editorHasSelection"
         }
+      ],
+      "copy-html.explorer-menu": [
+        {
+          "command": "copy-html.captureSelectedFolder"
+        }
       ]
     },
     "submenus": [
       {
-        "id": "copy-html.menu",
-        "label": "Capture Editor"
+        "id": "copy-html.editor-menu",
+        "label": "Copy HTML"
+      },
+      {
+        "id": "copy-html.explorer-menu",
+        "label": "Copy HTML"
       }
     ]
   },
   "scripts": {
-    "vscode:prepublish": "yarn run build",
+    "vscode:prepublish": "yarn run compile",
     "cli": "node out/cli.js",
     "compile": "webpack --config ./webpack.config.js && webpack --config ./webview-src/webpack.config.js",
     "watch": "concurrently \"webpack --watch --config ./webpack.config.js\" \"webpack --watch --config ./webview-src/webpack.config.js\"",
