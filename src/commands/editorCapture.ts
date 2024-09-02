@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import path from 'path';
 import { fetchWholeHTML, fetchSelectedHTML } from '../utils/htmlUtils';
 import { saveHTMLToFile } from '../utils/fileUtils';
-import { fetchHighlightedHTMLs } from './fetchFiles';
 
 export async function captureCurrent(context: vscode.ExtensionContext) {
     const activeEditor = vscode.window.activeTextEditor;
@@ -31,10 +30,12 @@ export async function copySelected(context: vscode.ExtensionContext) {
 }
 
 export async function _captureFiles(context: vscode.ExtensionContext, filePaths: string[]) {
-    const highlightHtmls = await fetchHighlightedHTMLs(context, filePaths);
+    for (const filePath of filePaths) {
+        const document = await vscode.workspace.openTextDocument(filePath);
+        await vscode.window.showTextDocument(document);
 
-    for (let i = 0; i < filePaths.length; i++) {
-        await saveHTMLToFile(highlightHtmls[i], vscode.Uri.file(filePaths[i]));
+        const highlightHtml = await fetchWholeHTML(context);
+        await saveHTMLToFile(highlightHtml, document.uri);
     }
 
     vscode.window.showInformationMessage(`Captured ${filePaths.length} files successfully`);
